@@ -1,0 +1,23 @@
+Пример FastAPI:
+from typing import List
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class ResumeRequest(BaseModel):
+    text: str
+
+class SkillsResponse(BaseModel):
+    skills: List[str]
+
+@app.post("/skills", response_model=SkillsResponse)
+async def extract_skills(payload: ResumeRequest) -> SkillsResponse:
+    known_skills = ["python", "sql", "django", "pandas", "docker"]
+    text = payload.text.lower()
+    found = [skill for skill in known_skills if skill in text]
+    return SkillsResponse(skills=found)
+
+Для оценки релевантности я бы собрал словарь признаков из вакансий и резюме, перевел их в эмбеддинги и посчитал косинусное сходство. Дополнительно стоит смотреть на вес опыта: ключевые навыки из последних проектов важнее, поэтому я бы поднял их коэффициент и добавил штраф за пробелы между требованиями и навыками в резюме. В итоге получаем скор, по которому можно ранжировать вакансии и давать человеку пояснение, какие пункты совпали.
+
+Генерацию сопроводительных писем вижу как шаблон с динамическими блоками. Беру лучшие совпадения между резюме и требованиями, формирую два коротких абзаца: первый про опыт и цифры, второй про мотивацию и доступность. Если данных мало, добавляю вежливые заготовки, но всегда вплетаю реальные факты, чтобы письмо звучало живо и не было похоже на болванку.

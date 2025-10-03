@@ -1,0 +1,5 @@
+aiogram==3.4.1
+python-docx==1.1.0
+PyPDF2==3.0.1
+python-dotenv==1.0.1
+pdfminer.six==20240706
